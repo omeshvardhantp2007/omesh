@@ -2,242 +2,494 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Bravehearts of Bharat - Which Hero Are You?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Which Indian King or Queen Matches Your Personality?</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap');
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5e6cc, #d4a574);
-      color: #333;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #8B0000, #B22222, #DC143C);
+      color: #f4e4bc;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 16px;
     }
-    .container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-      max-width: 700px;
+
+    .quiz-container {
+      background: rgba(0,0,0,0.9);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(139,0,0,0.6);
+      border: 3px solid #FFD700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FFD700, #FF4500, #FFD700);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin: 0 0 12px;
+      color: #FFD700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      font-weight: bold;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #f4e4bc;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,215,0,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid #FFD700;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FFD700, #FF4500);
+      transition: width 0.4s ease;
+      box-shadow: 0 0 10px #FFD700;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      line-height: 1.5;
       text-align: center;
     }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      color: #b8860b;
-      margin-bottom: 20px;
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .question {
-      margin: 30px 0;
-      text-align: left;
-    }
-    label {
-      display: block;
-      margin: 12px 0;
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 18px 20px;
+      border-radius: 15px;
+      background: rgba(255,215,0,0.1);
+      border: 2px solid rgba(255,215,0,0.3);
       cursor: pointer;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      font-size: 1rem;
     }
-    label:hover { background: #fff3e0; }
-    input[type="radio"] { margin-right: 10px; }
+
+    .option-label:hover {
+      border-color: #FFD700;
+      background: rgba(255,215,0,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255,215,0,0.3);
+    }
+
+    input[type="radio"] {
+      margin-top: 4px;
+      accent-color: #FFD700;
+      transform: scale(1.4);
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      flex: 1;
+      line-height: 1.5;
+    }
+
     button {
-      background: #b8860b;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
+      width: 100%;
+      padding: 16px;
       border-radius: 50px;
+      border: 2px solid #FFD700;
+      background: linear-gradient(45deg, #FF4500, #DC143C);
+      color: #FFD700;
+      font-size: 1.1rem;
+      font-weight: bold;
+      font-family: inherit;
       cursor: pointer;
-      margin-top: 20px;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    button:hover { background: #997a00; }
-    .result {
-      display: none;
-      margin-top: 40px;
+
+    button:hover {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #8B0000;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(255,215,0,0.5);
+    }
+
+    .hidden { display: none; }
+
+    /* Result Styles - NO IMAGES */
+    .result-hero {
+      text-align: center;
+      margin-bottom: 30px;
       padding: 30px;
-      background: #fff8e1;
-      border-radius: 12px;
-      font-size: 1.1em;
+      background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,69,0,0.1));
+      border-radius: 20px;
+      border: 3px solid #FFD700;
     }
-    .result h2 {
-      color: #b8860b;
-      font-family: 'Playfair Display', serif;
+
+    .hero-emoji {
+      font-size: 6rem;
+      margin-bottom: 20px;
+      display: block;
+      filter: drop-shadow(0 0 20px #FFD700);
     }
-    .result img {
-      width: 200px;
+
+    .hero-name {
+      font-size: 2.5rem;
+      color: #FFD700;
+      margin: 0 0 15px;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+      font-weight: bold;
+    }
+
+    .hero-title {
+      font-size: 1.4rem;
+      color: #f4e4bc;
+      margin-bottom: 20px;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-desc {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #e8d5a3;
+      text-align: center;
+      background: rgba(0,0,0,0.4);
+      padding: 25px;
+      border-radius: 15px;
+      border-left: 6px solid #FF4500;
+      margin-bottom: 30px;
+    }
+
+    .score-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .score-item {
+      background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,69,0,0.2));
+      padding: 20px 10px;
+      border-radius: 15px;
+      text-align: center;
+      border: 2px solid rgba(255,215,0,0.5);
+      transition: all 0.3s ease;
+    }
+
+    .score-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(255,215,0,0.4);
+    }
+
+    .score-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #FFD700;
+      margin-bottom: 8px;
+    }
+
+    .score-name {
+      font-size: 0.9rem;
+      color: #f4e4bc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .restart-btn {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #8B0000;
+      border-color: #FFD700;
+      font-size: 1.2rem;
+      padding: 18px;
+    }
+
+    .book-credit {
+      text-align: center;
+      margin-top: 25px;
+      padding: 15px;
+      background: rgba(255,215,0,0.1);
       border-radius: 10px;
-      margin: 20px 0;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      font-size: 0.9rem;
+      color: #f4e4bc;
+      border-left: 4px solid #FFD700;
+    }
+
+    @media (max-width: 600px) {
+      .quiz-container { padding: 24px 20px; }
+      h1 { font-size: 1.9rem; }
+      .hero-name { font-size: 2rem; }
+      .hero-emoji { font-size: 4.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Which Legendary Indian King or Queen Are You?</h1>
-    <p>Answer 8 simple questions and discover your royal match from Indian history!</p>
 
-    <form id="quizForm">
-      <!-- Question 1 -->
-      <div class="question">
-        <p><strong>1. How do you handle conflict?</strong></p>
-        <label><input type="radio" name="q1" value="a" required> Charge head-on with full force (like a lion)</label>
-        <label><input type="radio" name="q1" value="b"> Use clever strategy and diplomacy</label>
-        <label><input type="radio" name="q1" value="c"> Avoid war if possible; focus on justice</label>
-        <label><input type="radio" name="q1" value="d"> Fight only when absolutely necessary, but fiercely</label>
+  <div class="quiz-container">
+    <h1>🗡️ Bravehearts of Bharat</h1>
+    <p class="subtitle">Discover which legendary hero from Vikram Sampath's book you resemble most</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div id="quiz-screen">
+      <div id="question-text" class="question-text"></div>
+      <div id="options" class="options"></div>
+      <button id="nextBtn">Next</button>
+    </div>
+
+    <div id="result-screen" class="hidden">
+      <div class="result-hero">
+        <span id="hero-emoji" class="hero-emoji">⚔️</span>
+        <h2 id="hero-name" class="hero-name"></h2>
+        <p id="hero-title" class="hero-title"></p>
       </div>
-
-      <!-- Question 2 -->
-      <div class="question">
-        <p><strong>2. Your ideal weekend?</strong></p>
-        <label><input type="radio" name="q2" value="a" required> Exploring new territories/adventures</label>
-        <label><input type="radio" name="q2" value="b"> Reading, learning, or inventing something</label>
-        <label><input type="radio" name="q2" value="c"> Helping people and doing charity</label>
-        <label><input type="radio" name="q2" value="d"> Art, music, and grand celebrations</label>
+      <div id="hero-desc" class="hero-desc"></div>
+      <div class="score-breakdown" id="score-breakdown"></div>
+      <button id="restartBtn" class="restart-btn">⚔️ Fight Again</button>
+      <div class="book-credit">
+        📖 Based on <strong>"Bravehearts of Bharat"</strong> by Vikram Sampath
       </div>
-
-      <!-- Question 3 -->
-      <div class="question">
-        <p><strong>3. Biggest strength?</strong></p>
-        <label><input type="radio" name="q3" value="a" required> Bravery and fearlessness</label>
-        <label><input type="radio" name="q3" value="b"> Intelligence and vision</label>
-        <label><input type="radio" name="q3" value="c"> Compassion and fairness</label>
-        <label><input type="radio" name="q3" value="d"> Creativity and cultural patronage</label>
-      </div>
-
-      <!-- More questions (4-8) -->
-      <div class="question">
-        <p><strong>4. Favorite animal?</strong></p>
-        <label><input type="radio" name="q4" value="a" required> Lion / Tiger</label>
-        <label><input type="radio" name="q4" value="b"> Elephant (wise & strong)</label>
-        <label><input type="radio" name="q4" value="c"> Peacock</label>
-        <label><input type="radio" name="q4" value="d"> Horse</label>
-      </div>
-
-      <div class="question">
-        <p><strong>5. You are betrayed by a close ally. You…</strong></p>
-        <label><input type="radio" name="q5" value="a" required> Forgive once, but never forget</label>
-        <label><input type="radio" name="q5" value="b"> Cut them off forever</label>
-        <label><input type="radio" name="q5" value="c"> Give them a second chance if they repent</label>
-        <label><input type="radio" name="q5" value="d"> Publicly punish to set an example</label>
-      </div>
-
-      <div class="question">
-        <p><strong>6. Legacy you want?</strong></p>
-        <label><input type="radio" name="q6" value="a" required> Greatest warrior in history</label>
-        <label><input type="radio" name="q6" value="b"> Builder of an eternal empire</label>
-        <label><input type="radio" name="q6" value="c"> Most just and loved ruler</label>
-        <label><input type="radio" name="q6" value="d"> Patron of arts and culture</label>
-      </div>
-
-      <div class="question">
-        <p><strong>7. Favorite color scheme?</strong></p>
-        <label><input type="radio" name="q7" value="a" required> Red & Gold (royal power)</label>
-        <label><input type="radio" name="q7" value="b"> Saffron & White (spiritual)</label>
-        <label><input type="radio" name="q7" value="c"> Green & Gold (prosperity)</label>
-        <label><input type="radio" name="q7" value="d"> Deep Blue & Silver (elegance)</label>
-      </div>
-
-      <div class="question">
-        <p><strong>8. One word your people use for you?</strong></p>
-        <label><input type="radio" name="q8" value="a" required> Brave</label>
-        <label><input type="radio" name="q8" value="b"> Wise</label>
-        <label><input type="radio" name="q8" value="c"> Kind</label>
-        <label><input type="radio" name="q8" value="d"> Magnificent</label>
-      </div>
-
-      <button type="submit">Reveal My Royal Match! 👑</button>
-    </form>
-
-    <div id="result" class="result"></div>
+    </div>
   </div>
 
   <script>
-    const results = {
-      shivaji: {
-        title: "Chhatrapati Shivaji Maharaj",
-        desc: "You are fearless, clever, and a born leader! Just like Shivaji, you build your own path and protect your people at any cost.",
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Chhatrapati_Shivaji_Maharaj_statue_at_Vijaydurg_Fort.jpg/800px-Chhatrapati_Shivaji_Maharaj_statue_at_Vijaydurg_Fort.jpg"
+    // Bravehearts from the book - NO IMAGES, EMOJI INSTEAD
+    const bravehearts = {
+      lalitaditya: {
+        name: "Lalitaditya Muktapida",
+        title: "Kashmir's Greatest Conqueror",
+        desc: "Like Lalitaditya of Kashmir, you are a visionary empire-builder who expands boundaries through bold strategy and unmatched courage. Your conquests stretch from Afghanistan to Bengal.",
+        emoji: "🏹"
       },
-      akbar: {
-        title: "Emperor Akbar the Great",
-        desc: "Wise, tolerant, and visionary. You unite people from all walks of life and believe in justice and progress — truly the architect of an empire!",
-        img: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Akbar_the_Great_-_Project_Gutenberg_eText_13635.jpg"
+      naiki: {
+        name: "Rani Naiki Devi",
+        title: "Gujarat's Lioness Warrior",
+        desc: "Like Rani Naiki Devi who defeated Muhammad Ghori at Kasahrada, you defend your people fiercely and never back down from invaders. Your courage inspires generations.",
+        emoji: "🛡️"
       },
-      ashoka: {
-        title: "Emperor Ashoka (After Kalinga)",
-        desc: "Compassionate and reformed. You learn from mistakes and dedicate your life to peace, welfare, and dharma. The world is better because of you.",
-        img: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Ashoka_Pillar_at_Sarnath.jpg"
+      rudrama: {
+        name: "Rani Rudrama Devi",
+        title: "Warangal's Iron Queen",
+        desc: "Like Rani Rudrama Devi, you rule with unmatched strength and wisdom, breaking all conventions to protect your Kakatiya kingdom. A true warrior queen.",
+        emoji: "👑"
       },
-      raniLaxmibai: {
-        title: "Rani Lakshmibai of Jhansi",
-        desc: "Fierce, independent, and unstoppable! You fight for what’s right and will never bow down. “Khoob ladi mardani…” rings true for you!",
-        img: "https://upload.wikimedia.org/wikipedia/commons/8/81/Rani_Lakshmibai.jpg"
+      abbakka: {
+        name: "Rani Abbakka Chowta",
+        title: "Ullal's Freedom Fighter",
+        desc: "Like Rani Abbakka who fought Portuguese for 40 years, your resistance is legendary. You use guerrilla tactics and never surrender your coastal kingdom.",
+        emoji: "⚔️"
       },
-      krishnadevaraya: {
-        title: "Sri Krishnadevaraya (Vijayanagara)",
-        desc: "The golden ruler! You love art, literature, and grandeur. Under your rule, culture and prosperity flourish like never before.",
-        img: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Krishnadevaraya.jpg"
+      lachit: {
+        name: "Lachit Borphukan",
+        title: "Assam's Naval Genius",
+        desc: "Like Lachit Borphukan who defeated Mughals at Saraighat, you turn impossible odds into glorious victories through brilliant river warfare tactics.",
+        emoji: "🚢"
       },
-      chandragupta: {
-        title: "Chandragupta Maurya",
-        desc: "Strategic genius and master builder. With Chanakya by your side (mentally), you turn a small kingdom into a subcontinent-spanning empire!",
-        img: "https://upload.wikimedia.org/wikipedia/commons/6/62/Chandragupta_Maurya.jpg"
+      velu: {
+        name: "Velu Nachiyar",
+        title: "First Queen vs British",
+        desc: "Like Velu Nachiyar, India's first queen to fight British with rockets and army, you pioneer resistance and create history through sheer determination.",
+        emoji: "🔥"
+      },
+      ahilya: {
+        name: "Devi Ahilya Bai Holkar",
+        title: "Indore's Just Ruler",
+        desc: "Like Ahilya Bai Holkar, you combine unmatched justice with administrative genius. You build 100s of temples and ghats, creating prosperity for generations.",
+        emoji: "🏛️"
       }
     };
 
-    document.getElementById('quizForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    const questions = [
+      {
+        text: "Enemies invade your homeland. Your first move?",
+        options: [
+          { text: "Lead massive counter-attack to crush them.", type: "lalitaditya" },
+          { text: "Fortify defenses, fight on your terms.", type: "naiki" },
+          { text: "Rule from battlefield, never surrender.", type: "rudrama" },
+          { text: "Guerrilla tactics for decades if needed.", type: "abbakka" }
+        ]
+      },
+      {
+        text: "Your greatest strength in battle?",
+        options: [
+          { text: "Strategic genius, empire-building vision.", type: "lalitaditya" },
+          { text: "Unyielding defense of people's honor.", type: "naiki" },
+          { text: "Naval tactics, river warfare mastery.", type: "lachit" },
+          { text: "Iron will, unconventional leadership.", type: "rudrama" }
+        ]
+      },
+      {
+        text: "Facing impossible odds, you...",
+        options: [
+          { text: "Attack first - momentum wins wars.", type: "lalitaditya" },
+          { text: "Hold line - defense wins battles.", type: "naiki" },
+          { text: "Long-term resistance wears them down.", type: "abbakka" },
+          { text: "Build justice, prosperity forever.", type: "ahilya" }
+        ]
+      },
+      {
+        text: "Legacy you want to leave?",
+        options: [
+          { text: "Empires conquered across continents.", type: "lalitaditya" },
+          { text: "Kingdom ruled with wisdom, strength.", type: "rudrama" },
+          { text: "First to fight colonial invaders.", type: "velu" },
+          { text: "Temples, justice for generations.", type: "ahilya" }
+        ]
+      },
+      {
+        text: "Your battle cry?",
+        options: [
+          { text: "Victory or death on battlefield!", type: "lachit" },
+          { text: "My land, my people - never surrender!", type: "naiki" },
+          { text: "History remembers our resistance!", type: "abbakka" },
+          { text: "Justice and dharma above all!", type: "ahilya" }
+        ]
+      }
+    ];
 
-      // Simple scoring logic (count most chosen letter)
-      const answers = {
-        a: 0, b: 0, c: 0, d: 0
-      };
+    let currentIndex = 0;
+    const scores = {
+      lalitaditya: 0, naiki: 0, rudrama: 0, abbakka: 0,
+      lachit: 0, velu: 0, ahilya: 0
+    };
 
-      for (let i = 1; i <= 8; i++) {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selected) answers[selected.value]++;
+    // DOM Elements
+    const els = {
+      questionText: document.getElementById("question-text"),
+      options: document.getElementById("options"),
+      progressFill: document.getElementById("progressFill"),
+      nextBtn: document.getElementById("nextBtn"),
+      quizScreen: document.getElementById("quiz-screen"),
+      resultScreen: document.getElementById("result-screen"),
+      heroEmoji: document.getElementById("hero-emoji"),
+      heroName: document.getElementById("hero-name"),
+      heroTitle: document.getElementById("hero-title"),
+      heroDesc: document.getElementById("hero-desc"),
+      scoreBreakdown: document.getElementById("score-breakdown"),
+      restartBtn: document.getElementById("restartBtn")
+    };
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      els.questionText.textContent = q.text;
+      
+      const progress = ((currentIndex + 1) / questions.length) * 100;
+      els.progressFill.style.width = progress + "%";
+
+      els.options.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const label = document.createElement("label");
+        label.className = "option-label";
+        label.innerHTML = `
+          <input type="radio" name="option" value="${opt.type}" id="opt${currentIndex}-${i}">
+          <span class="option-text">${opt.text}</span>
+        `;
+        els.options.appendChild(label);
+      });
+
+      els.nextBtn.textContent = currentIndex === questions.length - 1 ? 
+        "Reveal Your Braveheart 👑" : "Next Battle →";
+    }
+
+    function getSelected() {
+      return document.querySelector('input[name="option"]:checked')?.value;
+    }
+
+    function showResult() {
+      let topHero = "lalitaditya";
+      let maxScore = 0;
+      for (let hero in scores) {
+        if (scores[hero] > maxScore) {
+          maxScore = scores[hero];
+          topHero = hero;
+        }
       }
 
-      let max = 'a';
-      for (let key in answers) {
-        if (answers[key] > answers[max]) max = key;
+      const hero = bravehearts[topHero];
+      
+      els.heroEmoji.textContent = hero.emoji;
+      els.heroName.textContent = hero.name;
+      els.heroTitle.textContent = hero.title;
+      els.heroDesc.textContent = hero.desc;
+
+      els.scoreBreakdown.innerHTML = Object.entries(scores)
+        .sort(([,a], [,b]) => b - a)
+        .map(([heroKey, score]) => {
+          const h = bravehearts[heroKey];
+          return `
+            <div class="score-item">
+              <div class="score-value">${score}</div>
+              <div class="score-name">${h.name.split(' ')[0]}</div>
+            </div>
+          `;
+        }).join('');
+
+      els.quizScreen.classList.add("hidden");
+      els.resultScreen.classList.remove("hidden");
+    }
+
+    els.nextBtn.onclick = () => {
+      const selected = getSelected();
+      if (!selected) {
+        alert("Choose your warrior path! ⚔️");
+        return;
       }
 
-      // Mapping majority letter to ruler
-      const mapping = {
-        a: "shivaji",       // Brave & fierce → Shivaji / Rani Laxmibai
-        b: "akbar",         // Wise & strategic → Akbar / Chandragupta
-        c: "ashoka",        // Compassionate → Ashoka
-        d: "krishnadevaraya" // Cultural & grand → Krishnadevaraya
-      };
+      scores[selected]++;
+      
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    };
 
-      // For more variety, if tie or specific combos, randomize within group
-      const tieBreakers = {
-        a: Math.random() > 0.5 ? "raniLaxmibai" : "shivaji",
-        b: Math.random() > 0.5 ? "chandragupta" : "akbar"
-      };
+    els.restartBtn.onclick = () => {
+      currentIndex = 0;
+      Object.keys(scores).forEach(k => scores[k] = 0);
+      els.resultScreen.classList.add("hidden");
+      els.quizScreen.classList.remove("hidden");
+      els.progressFill.style.width = "0%";
+      renderQuestion();
+    };
 
-      const finalResult = (answers.a === answers.b && answers.a === Math.max(...Object.values(answers))) 
-                          ? tieBreakers.a 
-                          : mapping[max] || (max === 'a' ? tieBreakers.a : mapping[max]);
-
-      const res = results[finalResult];
-
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').innerHTML = `
-        <h2>You are… ${res.title}!</h2>
-        <img src="\( {res.img}" alt=" \){res.title}">
-        <p><strong>${res.desc}</strong></p>
-        <button onclick="location.reload()">Try Again</button>
-      `;
-      window.scrollTo(0, document.body.scrollHeight);
-    });
+    renderQuestion();
   </script>
 </body>
 </html>
